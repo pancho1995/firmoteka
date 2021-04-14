@@ -1,0 +1,58 @@
+Resources:
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.usersTableName}
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: username
+          AttributeType: S
+        - AttributeName: full_name
+          AttributeType: S
+        - AttributeName: phone_number
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+        - AttributeName: company_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+        - AttributeName: username
+          KeyType: RANGE
+      LocalSecondaryIndexes:
+        - IndexName: UserByCompanyIndex
+          KeySchema:
+            - AttributeName: user_id
+              KeyType: HASH
+            - AttributeName: company_id
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UserByFullNameIndex
+          KeySchema:
+            - AttributeName: user_id
+              KeyType: HASH
+            - AttributeName: full_name
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UserByPhoneIndex
+          KeySchema:
+            - AttributeName: user_id
+              KeyType: HASH
+            - AttributeName: phone_number
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UserByEmailIndex
+          KeySchema:
+            - AttributeName: user_id
+              KeyType: HASH
+            - AttributeName: email
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+  

@@ -1,0 +1,53 @@
+Resources:
+  CognitoUserPoolFirmotekaUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: ${self:custom.userPoolName}
+      UsernameConfiguration:
+        CaseSensitive: true
+      AutoVerifiedAttributes:
+        - email
+        - phone_number
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+          Mutable: false
+        - AttributeDataType: String
+          Name: phone_number
+          Required: true
+          Mutable: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireUppercase: true
+      LambdaConfig:
+          PostConfirmation: !GetAtt ConfirmUserSignupLambdaFunction.Arn
+
+  UserPoolInvokeConfirmUserSignupLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: !Ref ConfirmUserSignupLambdaFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt CognitoUserPoolFirmotekaUserPool.Arn
+
+  CognitoUserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: web-client
+      GenerateSecret: False
+      UserPoolId: !Ref CognitoUserPoolFirmotekaUserPool
+      ReadAttributes:
+        - email
+        - phone_number
+      WriteAttributes:
+        - email
+        - phone_number
+      ExplicitAuthFlows:
+          - ALLOW_USER_SRP_AUTH
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED

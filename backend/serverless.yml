@@ -24,7 +24,7 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   userPoolName: ${self:provider.stage}-${self:service}-user-pool
   usersTableName: ${self:provider.stage}-${self:service}-users
-  accountId: 364503802683
+  accountId: 378190466098
 
 functions:
   confirmUserSignup:
@@ -36,7 +36,7 @@ functions:
         Action: dynamodb:PutItem
         Resource: !GetAtt UsersTable.Arn
     events:
-      
+
 
 resources:
   - ${file(resources/cognito.yml)}
